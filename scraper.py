@@ -58,7 +58,7 @@ class RecipeFetcher:
     '''
 
 rf = RecipeFetcher()
-meat_lasagna = rf.search_recipes('meat lasagna')[0]
+meat_lasagna = rf.search_recipes('cheese pizza')[0]
 info = rf.scrape_recipe(meat_lasagna)
 
 for ingredient in info['ingredients']:
