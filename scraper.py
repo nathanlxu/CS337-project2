@@ -57,12 +57,14 @@ class RecipeFetcher:
         return results
     '''
 
+# USAGE:
 rf = RecipeFetcher()
 meat_lasagna = rf.search_recipes('cheese pizza')[0]
 info = rf.scrape_recipe(meat_lasagna)
+print(info)
 
-for ingredient in info['ingredients']:
-    print(ingredient)
-
-for direct in info['directions']:
-    print(direct)
+# for ingredient in info['ingredients']:
+#     print(ingredient)
+#
+# for direct in info['directions']:
+#     print(direct)
