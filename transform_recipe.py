@@ -6,7 +6,7 @@ import random
 class RecipeTransformer:
     def __init__(self):
         self.recipe_fetcher = scraper.RecipeFetcher()
-        self.ingredients = foodsdb.RecipeDB('foods.json')
+        self.ingredients = foodsdb.RecipeDB('AllFoods.json')
 
     def original_recipe(self, item):
         rf = self.recipe_fetcher
@@ -48,13 +48,14 @@ class RecipeTransformer:
 
         vegetarian = self.ingredients.veggie
         carnivore = self.ingredients.meat
+        print(info['ingredients'])
 
-        for i in range(len(info['ingredients'])):
-            for lst in info['ingredients']:
-                for ingredient in lst.split(' '):
+        for lst in info['ingredients']:
+            for ingredient in lst.split(' '):
+                if ingredient in self.ingredients.all_ingredients:
                     print(ingredient)
-                    if self.ingredients._isMeatPresent(ingredient):
-                        print('this is meat^')
+                if ingredient in self.ingredients.meat:
+                    print('this is meat^')
         return info['ingredients']
 
 
