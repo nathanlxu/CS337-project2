@@ -569,6 +569,17 @@
         "cottage cheese",
         "greek yogurt"
     ],
+    "alternates":[
+        ["beef", "mushroom beef"],
+        ["chicken", "tofu"],
+        ["sausage", "impossible sausage"],
+        ["salmon", "tomato"],
+        ["pork", "tofu"],
+        ["lamb", "potato"],
+        ["bacon", "tempeh"],
+        ["ham", "tempeh"],
+        ["cod", "potato"]
+    ],
     "descriptions": {
         "meat": [
             "boneless",

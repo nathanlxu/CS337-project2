@@ -19,6 +19,12 @@ class RecipeDB:
             self.vegprot = json_data["VegetarianProtein"]
             self.all_ingredients = self.veggie + self.spice + self.condiments + self.carbs + self.fats + self.proteins
             self.descriptions = json_data['descriptions']
+            self.alternates = json_data['alternates']
+            self.m2v = {}
+            self.v2m = {}
+            for alternate in self.alternates:
+                self.m2v[alternate[0]] = alternate[1]
+                self.v2m[alternate[1]] = alternate[0]
             # self.seafood = json_data["seafood"]
             # self.dessert = json_data["dessert"]
             # self.veggie = json_data["veggie"]

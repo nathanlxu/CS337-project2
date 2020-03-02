@@ -73,6 +73,7 @@ class RecipeTransformer:
         vegprot = self.idb.vegprot
         carnivore = self.idb.meat
         meat_desc = self.idb.descriptions['meat']
+        m2v = self.idb.m2v
 
         for i in range(len(info['ingredients'])):
             entry = info['ingredients'][i].split(' ')
@@ -86,7 +87,10 @@ class RecipeTransformer:
                     for descriptor in new_entry:
                         if descriptor in meat_desc:
                             removal.append(descriptor)
-                    new_entry = [vegprot[0] if wd == element else wd for wd in new_entry]
+                    if element in m2v:
+                        new_entry = [m2v[element] if wd == element else wd for wd in new_entry]
+                    else:
+                        new_entry = ["potato" if wd == element else wd for wd in new_entry] #if no preset vegetarian alternative, go with potatoes
                     for rm in removal:
                         new_entry.remove(rm)
                     info['ingredients'][i] = " ".join(new_entry)
