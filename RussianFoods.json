@@ -1,0 +1,20 @@
+{
+    "RussianSpices": [
+        "black pepper", "garlic powder", "dill", "onion powder", "bay leaves", 
+    ],
+    "RussianCarbs": [
+        "potatoes", "buckwheat", "white rice", "rye bread", "crepes", "pumpernickel bread"
+    ],
+    "RussianProteins": [
+        "chicken", "ground beef", "sturgeon", "lamb", "sea bass", "polish sausage", "hard boiled eggs"
+    ],
+    "RussianVeg": [
+        "onions", "celery", "bell peppers", "carrots", "beets", "turnips", "radishes", "cabbage", "mushrooms", "eggplant", "peas"
+    ],
+    "RussianFats": [
+        "butter", "sunflower seed oil", "chicken fat"
+    ],
+    "RussianCondiments": [
+        "fresh onion", "fresh dill", "sour cream", "pickles", "horseradish", "gelatin"
+    ]
+}
