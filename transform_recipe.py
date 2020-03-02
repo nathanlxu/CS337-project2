@@ -169,6 +169,47 @@ class RecipeTransformer:
                     info['ingredients'][i] = " ".join(new_entry)
         return info['ingredients']
 
+    def transform_method(self, item, method1, method2):
+        #from method1 to method2
+        #supports bake, boil, broil, fry, grill, steam, pressure cook, stir-fry, stew, and roast
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+
+        methods = self.idb.m2t
+        tools = self.idb.t2m
+        if method1 not in methods:
+            print('method1 not supported')
+            return info['ingredients']
+        if method2 not in methods:
+            print('method2 not supported')
+            return info['ingredients']
+
+        for i in range(len(info['ingredients'])):
+            entry = info['ingredients'][i].split(' ')
+            new_entry = entry
+            for element in entry:
+                if element == method1:
+                    new_entry = [method2 if wd == element else wd for wd in new_entry]
+                if element == methods[method1]:
+                    new_entry = [methods[method2] if wd == methods[method1] else wd for wd in new_entry]
+                info['ingredients'][i] = " ".join(new_entry)
+        
+        for j in range(len(info['directions'])):
+            direction = info['directions'][j].split(' ')
+            direction = [direction.lower() for direction in direction]
+            new_direction = direction
+            for element in direction:
+                if element == method1:
+                    print(direction)
+                    new_direction = [method2 if wd == element else wd for wd in new_direction]
+                    print(new_direction)
+                if element == methods[method1]:
+                    new_direction = [methods[method2] if wd == methods[method1] else wd for wd in new_direction]
+                info['directions'][j] = " ".join(new_direction)
+
+        return info['ingredients']
+
     def transform_to_russian(self, item):
 
 
@@ -190,25 +231,32 @@ for ingredient in original['ingredients']:
 for direction in original['directions']:
     print(direction)
 
-healthy = rt.transform_health(food_item, False)
-print('\nHEALTHY')
-for ingredient in healthy[0]:
-    print(ingredient)
-for direction in healthy[1]:
-    print(direction)
+print('primary methods:')
+for primary_method in original['primary_methods']:
+    print(primary_method)
+print('secondary methods:')
+for secondary_method in original['secondary_methods']:
+    print(secondary_method)
+
+# healthy = rt.transform_health(food_item, False)
+# print('\nHEALTHY')
+# for ingredient in healthy[0]:
+#     print(ingredient)
+# for direction in healthy[1]:
+#     print(direction)
 
 
-original = rt.original_recipe('meat lasagna')
-print('MEAT')
-for o in original:
-    print(o)
+# original = rt.original_recipe('meat lasagna')
+# print('MEAT')
+# for o in original:
+#     print(o)
 
-vegetarian = rt.transform_to_vegetarian('meat lasagna')
-print('VEGETARIAN')
-for v in vegetarian:
-    print(v)
+# vegetarian = rt.transform_to_vegetarian('meat lasagna')
+# print('VEGETARIAN')
+# for v in vegetarian:
+#     print(v)
 
-c = rt.transform_to_carnivore('meat lasagna')
-print('TO MEAT')
-for ll in c:
-    print(ll)
+# c = rt.transform_method('meat lasagna', 'bake', 'fry')
+# print('BAKE TO FRY')
+# for ll in c:
+#     print(ll)

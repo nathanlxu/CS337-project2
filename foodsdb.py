@@ -25,6 +25,16 @@ class RecipeDB:
             for alternate in self.alternates:
                 self.m2v[alternate[0]] = alternate[1]
                 self.v2m[alternate[1]] = alternate[0]
+
+            self.methods = json_data['methods']
+            self.m2t = {}
+            self.t2m = {}
+            for method in self.methods:
+                self.m2t[method[0]] = method[1]
+                self.t2m[method[1]] = method[0]
+            self.pcm = json_data['cooking_methods']['primary']
+            self.scm = json_data['cooking_methods']['secondary']
+
             # self.seafood = json_data["seafood"]
             # self.dessert = json_data["dessert"]
             # self.veggie = json_data["veggie"]
