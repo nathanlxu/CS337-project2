@@ -74,7 +74,6 @@ class RecipeTransformer:
         carnivore = self.idb.meat
         meat_desc = self.idb.descriptions['meat']
         m2v = self.idb.m2v
-
         for i in range(len(info['ingredients'])):
             entry = info['ingredients'][i].split(' ')
             new_entry = entry
@@ -85,12 +84,17 @@ class RecipeTransformer:
                         if descriptor in meat_desc:
                             removal.append(descriptor)
                     if element in m2v:
-                        new_entry = [m2v[element] if wd == element else wd for wd in new_entry]
+                        replacement = m2v[element]
                     else:
-                        new_entry = ["potato" if wd == element else wd for wd in new_entry] #if no preset vegetarian alternative, go with potatoes
+                        replacement = "potato" #default replacement
+                    new_entry = [replacement if wd == element else wd for wd in new_entry]
+                    for j in range(len(info['directions'])):
+                        info['directions'][j] = info['directions'][j].replace(element, replacement)
+                        info['directions'][j] = info['directions'][j].replace('meat', 'vegetarian alternative')
                     for rm in removal:
                         new_entry.remove(rm)
                     info['ingredients'][i] = " ".join(new_entry)
+        print(info['directions'])
         return info['ingredients']
 
     def transform_to_carnivore(self, item):
@@ -107,9 +111,12 @@ class RecipeTransformer:
             for element in entry:
                 if element in vegprot:
                     if element in v2m:
-                        new_entry = [v2m[element] if wd == element else wd for wd in new_entry]
+                        replacement = v2m[element]
                     else:
-                        new_entry = ["chicken" if wd == element else wd for wd in new_entry] #if no preset veg to meat alternative, go with chicken
+                        replacement = "chicken" #if no preset veg to meat alternative, go with chicken
+                    for j in range(len(info['directions'])):
+                        info['directions'][j] = info['directions'][j].replace(element, replacement)
+                    new_entry = [replacement if wd == element else wd for wd in new_entry]
                     info['ingredients'][i] = " ".join(new_entry)
         return info['ingredients']
 
@@ -149,7 +156,7 @@ print('VEGETARIAN')
 for v in vegetarian:
     print(v)
 
-c = rt.transform_to_carnivore('pizza')
+c = rt.transform_to_carnivore('meat lasagna')
 print('TO MEAT')
 for ll in c:
     print(ll)
