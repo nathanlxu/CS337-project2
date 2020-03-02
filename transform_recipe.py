@@ -3,10 +3,36 @@ import ingredients
 import foodsdb
 import random
 
+import json
+
 class RecipeTransformer:
     def __init__(self):
         self.recipe_fetcher = scraper.RecipeFetcher()
         self.idb = foodsdb.RecipeDB('AllFoods.json')
+
+        self.all = AllFoods
+        self.russian = RussianFoods
+
+    def get_categories(self, item):
+        with open("AllFoods.json") as foods:
+            all_foods = json.loads(foods)
+        categories = ["Veg", "Carbs", "Proteins", "Spices", "Fats", "Condiments"]
+        categories_dict = {
+            "Carbs": [],
+            "Proteins": [],
+            "Veg": [],
+            "Spices": [],
+            "Fats": [],
+            "Condiments": []
+        }
+        recipe = self.original_recipe(item)
+        for ingredient in recipe:
+            for cat in categories:
+                if ingredient in all_foods[cat]:
+                     categories_dict[cat].append(ingredient)
+        print(categories_dict)
+        return categories_dict
+
 
     def original_recipe(self, item):
         rf = self.recipe_fetcher
@@ -65,9 +91,23 @@ class RecipeTransformer:
                     info['ingredients'][i] = " ".join(entry)
         return info['ingredients']
 
+    def transform_to_russian(self, item):
+
+
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+
+        self.get_categories(item)
+
+
+
 rt = RecipeTransformer()
 
 original = rt.original_recipe('meat lasagna')
+
+rt.get_categories('meat lasagna')
+
 print('ORIGINAL')
 for o in original:
     print(o)
