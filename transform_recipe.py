@@ -1,12 +1,35 @@
 import scraper
 import ingredients
+import foodsdb
 import random
 import json
 
 class RecipeTransformer:
     def __init__(self):
         self.recipe_fetcher = scraper.RecipeFetcher()
-        # self.mappings = {}
+        self.idb = foodsdb.RecipeDB('AllFoods.json')
+        # self.russian = RussianFoods
+
+    def get_categories(self, item):
+        with open("AllFoods.json") as foods:
+            all_foods = json.loads(foods)
+        categories = ["Veg", "Carbs", "Proteins", "Spices", "Fats", "Condiments"]
+        categories_dict = {
+            "Carbs": [],
+            "Proteins": [],
+            "Veg": [],
+            "Spices": [],
+            "Fats": [],
+            "Condiments": []
+        }
+        recipe = self.original_recipe(item)
+        for ingredient in recipe:
+            for cat in categories:
+                if ingredient in all_foods[cat]:
+                     categories_dict[cat].append(ingredient)
+        print(categories_dict)
+        return categories_dict
+
 
     def original_recipe(self, item):
         rf = self.recipe_fetcher
@@ -91,6 +114,64 @@ class RecipeTransformer:
 
         return info
 
+    def transform_to_vegetarian(self, item):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+
+        vegprot = self.idb.vegprot
+        carnivore = self.idb.meat
+        meat_desc = self.idb.descriptions['meat']
+        m2v = self.idb.m2v
+
+        for i in range(len(info['ingredients'])):
+            entry = info['ingredients'][i].split(' ')
+            new_entry = entry
+            for element in entry:
+                if element in carnivore:
+                    removal = []
+                    for descriptor in new_entry:
+                        if descriptor in meat_desc:
+                            removal.append(descriptor)
+                    if element in m2v:
+                        new_entry = [m2v[element] if wd == element else wd for wd in new_entry]
+                    else:
+                        new_entry = ["potato" if wd == element else wd for wd in new_entry] #if no preset vegetarian alternative, go with potatoes
+                    for rm in removal:
+                        new_entry.remove(rm)
+                    info['ingredients'][i] = " ".join(new_entry)
+        return info['ingredients']
+
+    def transform_to_carnivore(self, item):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+        vegprot = self.idb.vegprot
+        carnivore = self.idb.meat
+        v2m = self.idb.v2m
+
+        for i in range(len(info['ingredients'])):
+            entry = info['ingredients'][i].split(' ')
+            new_entry = entry
+            for element in entry:
+                if element in vegprot:
+                    if element in v2m:
+                        new_entry = [v2m[element] if wd == element else wd for wd in new_entry]
+                    else:
+                        new_entry = ["chicken" if wd == element else wd for wd in new_entry] #if no preset veg to meat alternative, go with chicken
+                    info['ingredients'][i] = " ".join(new_entry)
+        return info['ingredients']
+
+    def transform_to_russian(self, item):
+
+
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+
+        self.get_categories(item)
+
+
 
 rt = RecipeTransformer()
 food_item = "meat lasagna"
@@ -108,3 +189,19 @@ for ingredient in healthy[0]:
     print(ingredient)
 for direction in healthy[1]:
     print(direction)
+
+
+original = rt.original_recipe('meat lasagna')
+print('MEAT')
+for o in original:
+    print(o)
+
+vegetarian = rt.transform_to_vegetarian('meat lasagna')
+print('VEGETARIAN')
+for v in vegetarian:
+    print(v)
+
+c = rt.transform_to_carnivore('pizza')
+print('TO MEAT')
+for ll in c:
+    print(ll)
