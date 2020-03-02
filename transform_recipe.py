@@ -78,11 +78,8 @@ class RecipeTransformer:
         for i in range(len(info['ingredients'])):
             entry = info['ingredients'][i].split(' ')
             new_entry = entry
-
             for element in entry:
-                if element in self.idb.all_ingredients: #an ingredient
-                    print(element)
-                if element in self.idb.meat:
+                if element in carnivore:
                     removal = []
                     for descriptor in new_entry:
                         if descriptor in meat_desc:
@@ -93,6 +90,26 @@ class RecipeTransformer:
                         new_entry = ["potato" if wd == element else wd for wd in new_entry] #if no preset vegetarian alternative, go with potatoes
                     for rm in removal:
                         new_entry.remove(rm)
+                    info['ingredients'][i] = " ".join(new_entry)
+        return info['ingredients']
+
+    def transform_to_carnivore(self, item):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+        vegprot = self.idb.vegprot
+        carnivore = self.idb.meat
+        v2m = self.idb.v2m
+
+        for i in range(len(info['ingredients'])):
+            entry = info['ingredients'][i].split(' ')
+            new_entry = entry
+            for element in entry:
+                if element in vegprot:
+                    if element in v2m:
+                        new_entry = [v2m[element] if wd == element else wd for wd in new_entry]
+                    else:
+                        new_entry = ["chicken" if wd == element else wd for wd in new_entry] #if no preset veg to meat alternative, go with chicken
                     info['ingredients'][i] = " ".join(new_entry)
         return info['ingredients']
 
@@ -131,3 +148,8 @@ vegetarian = rt.transform_to_vegetarian('meat lasagna')
 print('VEGETARIAN')
 for v in vegetarian:
     print(v)
+
+c = rt.transform_to_carnivore('pizza')
+print('TO MEAT')
+for ll in c:
+    print(ll)
