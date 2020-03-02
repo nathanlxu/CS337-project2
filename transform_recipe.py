@@ -9,9 +9,7 @@ class RecipeTransformer:
     def __init__(self):
         self.recipe_fetcher = scraper.RecipeFetcher()
         self.idb = foodsdb.RecipeDB('AllFoods.json')
-
-        self.all = AllFoods
-        self.russian = RussianFoods
+        # self.russian = RussianFoods
 
     def get_categories(self, item):
         with open("AllFoods.json") as foods:
@@ -78,17 +76,20 @@ class RecipeTransformer:
 
         for i in range(len(info['ingredients'])):
             entry = info['ingredients'][i].split(' ')
-            print(entry)
+            new_entry = entry
+
             for element in entry:
                 if element in self.idb.all_ingredients: #an ingredient
                     print(element)
                 if element in self.idb.meat:
-                    print('this is meat^')
-                    entry = [vegprot[0] if wd == element else wd for wd in entry]
-                    for element in entry:
-                        if element in meat_desc:
-                            entry.remove(element)
-                    info['ingredients'][i] = " ".join(entry)
+                    removal = []
+                    for descriptor in new_entry:
+                        if descriptor in meat_desc:
+                            removal.append(descriptor)
+                    new_entry = [vegprot[0] if wd == element else wd for wd in new_entry]
+                    for rm in removal:
+                        new_entry.remove(rm)
+                    info['ingredients'][i] = " ".join(new_entry)
         return info['ingredients']
 
     def transform_to_russian(self, item):
@@ -106,7 +107,7 @@ rt = RecipeTransformer()
 
 original = rt.original_recipe('meat lasagna')
 
-rt.get_categories('meat lasagna')
+# rt.get_categories('meat lasagna')
 
 print('ORIGINAL')
 for o in original:

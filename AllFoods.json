@@ -441,9 +441,7 @@
     "AllProteins":[
         "eggs",
         "chicken",
-        "ground chicken",
         "beef",
-        "ground beef",
         "steak",
         "lamb",
         "veal",
@@ -506,9 +504,7 @@
         ],
     "MeatProtein":[
         "chicken",
-        "ground chicken",
         "beef",
-        "ground beef",
         "steak",
         "lamb",
         "veal",
