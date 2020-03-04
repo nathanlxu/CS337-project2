@@ -2,6 +2,7 @@ import nltk
 import re
 import pprint
 from nltk import Tree
+from transform_recipe import RecipeTransformer
 
 patterns = """
     NP: {<JJ>*<NN*>+}
@@ -37,11 +38,43 @@ def sent_parse(input):
 def find_nps(text):
     prepared = prepare_text(text)
     parsed = parsed_text_to_NP(prepared)
-    print(parsed)
+    #print(parsed)
     return parsed
     #final = sent_parse(parsed)
 
 
 #nps = find_nps("1 (16 ounce) package cottage cheese")
 #print(nps)
-find_nps("1 1/2 (25 ounce) jars tomato-basil pasta sauce")
+
+measurements = ["ounce", "ounces", "cup", "cups", "quart", "quarts", "tablespoon", "tablespoons", "teaspoon", "teaspoons", "pinch", "dash", "gallon", "gallons", 'package', "packages",
+"oz", "qt", "tsp", "tbsp", "gal", "pound", "lb", "ground"]
+
+def get_ingredient(text):
+    np_list = find_nps(text)
+    for np in np_list:
+            #if np==m:
+            #    np_list.remove(np)
+        if np in measurements:
+            np_list.remove(np)
+
+    return np_list
+
+
+rt = RecipeTransformer()
+
+original = rt.original_recipe("fish and chips")
+'''
+for item in original:
+    print(item)
+    print(get_ingredient(item))
+'''
+
+print(get_ingredient("eggs"))
+
+
+
+
+
+
+#spices taken from https://github.com/dariusk/corpora/tree/master/data/foods
+#nlp stuff taken from https://nbviewer.jupyter.org/github/lukewrites/NP_chunking_with_nltk/blob/master/NP_chunking_with_the_NLTK.ipynb
