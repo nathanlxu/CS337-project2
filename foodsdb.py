@@ -18,6 +18,22 @@ class RecipeDB:
             self.meat = json_data["MeatProtein"]
             self.vegprot = json_data["VegetarianProtein"]
             self.all_ingredients = self.veggie + self.spice + self.condiments + self.carbs + self.fats + self.proteins
+            self.descriptions = json_data['descriptions']
+            self.alternates = json_data['alternates']
+            self.m2v = {}
+            self.v2m = {}
+            for alternate in self.alternates:
+                self.m2v[alternate[0]] = alternate[1]
+                self.v2m[alternate[1]] = alternate[0]
+
+            self.methods = json_data['methods']
+            self.m2t = {}
+            self.t2m = {}
+            for method in self.methods:
+                self.m2t[method[0]] = method[1]
+                self.t2m[method[1]] = method[0]
+            self.pcm = json_data['cooking_methods']['primary']
+            self.scm = json_data['cooking_methods']['secondary']
 
             # self.seafood = json_data["seafood"]
             # self.dessert = json_data["dessert"]
@@ -39,15 +55,3 @@ class RecipeDB:
             # # set of cooking methods
             # self.primaryMethods = json_data["methods"]["primary"]
             # self.secondaryMethods = json_data["methods"]["secondary"]
-
-            # parse and get the healthy to unhealthy transformations
-            # get the structure
-            # healthyAndUnhealthy = json_data["healthyToUnhealthy"]
-            # self.healthyToUnhealthy = {
-            #     pairs["healthy"]: pairs["unhealthy"]
-            #     for pairs in healthyAndUnhealthy
-            # }
-            # self.unhealthyToHealthy = {
-            #     pairs["unhealthy"]: pairs["healthy"]
-            #     for pairs in healthyAndUnhealthy
-            # }
