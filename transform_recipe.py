@@ -242,7 +242,7 @@ class RecipeTransformer:
         return tb.noun_phrases
 
 
-
+    """
     def transform_to_russian(self, rec):
 
         measurements = ["ounce", "ounces", "cup", "cups", "quart", "quarts", "tablespoon", "tablespoons", "teaspoon", "teaspoons", "pinch", "dash", "gallon", "gallons", 'package', "packages",
@@ -314,9 +314,9 @@ class RecipeTransformer:
 
         final_dict: {"ingredients": orig_ingredients, "directions": orig_directions}        
         return final_dict
+    """
 
-
-    def transform_to_italian(self, rec):
+    def transform_to_cuisine(self, rec, cuisine):
 
         measurements = ["ounce", "ounces", "cup", "cups", "quart", "quarts", "tablespoon", "tablespoons", "teaspoon", "teaspoons", "pinch", "dash", "gallon", "gallons", 'package', "packages",
 "oz", "qt", "tsp", "tbsp", "gal", "pound", "lb", "pounds", "lbs", "jars", "jar", "or", "to", "taste", ",", "for"]
@@ -355,8 +355,8 @@ class RecipeTransformer:
         print(prep_list)
         categorized = self.get_categories(prep_list)
 
-        with open("ItalianFoods.json") as rf:
-            italian_foods = json.load(rf)
+        with open(cuisine+"Foods.json") as rf:
+            cuisine_foods = json.load(rf)
 
         replacements = []
 
@@ -364,12 +364,12 @@ class RecipeTransformer:
             randoms = []
             for ing in categorized[cat]:
                 counter = 0
-                for food in italian_foods[cat]:
+                for food in cuisine_foods[cat]:
                     if food in ing:
                         counter+=1
                 if counter == 0:
 
-                    random_replacement = random.choice(italian_foods[cat])
+                    random_replacement = random.choice(cuisine_foods[cat])
                     replacements.append([ing, random_replacement])
         
         print(replacements)
@@ -385,7 +385,7 @@ class RecipeTransformer:
                 if rep[0] in orig_directions[i]:
                     orig_directions[i] = (orig_directions[i].replace(rep[0], rep[1]))
 
-        final_dict: {"ingredients": orig_ingredients, "directions": orig_directions}        
+        final_dict = {"ingredients": orig_ingredients, "directions": orig_directions}        
         return final_dict
 
 
@@ -398,7 +398,7 @@ rt = RecipeTransformer()
 food_item = "meat lasagna"
 
 
-parsed = rt.transform_to_russian("meat lasagna")
+parsed = rt.transform_to_cuisine("meat lasagna", "Russian")
 print(parsed)
 #original = rt.original_recipe(food_item)
 
@@ -438,3 +438,4 @@ rt.recipe_fetcher.display()
 # print('BAKE TO FRY')
 # for ll in c:
 #     print(ll)
+'''

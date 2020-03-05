@@ -26,5 +26,3 @@ ingredients_health = {'healthy': [healthy_dairy, healthy_fats, healthy_methods,
 healthy_prefixes = ['whole grain ', 'whole wheat ', 'whole rye ', 'buckwheat ']
 unhealthy_prefixes = ['white ', 'enriched wheat ', 'refined wheat ', 'enriched rye ', 'processed ']
 grains = ['rice', 'macaroni', 'spaghetti', 'noodle', 'pasta']
-
-# print(ingredients_health)
