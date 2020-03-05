@@ -6,12 +6,12 @@ import foodsdb
 import random
 import json
 import utils
+import sys
 
 class RecipeTransformer:
     def __init__(self):
         self.recipe_fetcher = scraper.RecipeFetcher()
         self.idb = foodsdb.RecipeDB('AllFoods.json')
-        # self.russian = RussianFoods
 
     def get_categories(self, item):
         with open("AllFoods.json") as foods:
@@ -172,7 +172,7 @@ class RecipeTransformer:
                         new_entry.remove(rm)
                     info['ingredients'][i] = " ".join(new_entry)
         self.recipe_fetcher.results = info
-        return info['ingredients']
+        return info['ingredients'], info['directions']
 
     def transform_to_carnivore(self, item):
         rf = self.recipe_fetcher
@@ -237,7 +237,7 @@ class RecipeTransformer:
                     new_direction = [methods[method2] if wd == methods[method1] else wd for wd in new_direction]
                 info['directions'][j] = " ".join(new_direction)
         self.recipe_fetcher.results = info
-        return info['ingredients']
+        return info['ingredients'], info['directions']
 
     def transform_to_russian(self, item):
         rf = self.recipe_fetcher
@@ -280,43 +280,60 @@ class RecipeTransformer:
 
         return modified_ingredients
 
+def print_items(lst):
+    print('\n')
+    for item in lst:
+        print(item)
 
-rt = RecipeTransformer()
-food_item = "meat lasagna"
+def print_items2(dct):
+    for d in dct:
+        print_items(d)
 
-original = rt.original_recipe(food_item)
-print('ORIGINAL')
-# for ingredient in original['ingredients']:
-#     print(ingredient)
-# for direction in original['directions']:
-#     print(direction)
-rt.recipe_fetcher.display()
+def main():
+    '''This function calls your program. Typing "python gg_api.py"
+    will run this function. Or, in the interpreter, import gg_api
+    and then run gg_api.main(). This is the second thing the TA will
+    run when grading. Do NOT change the name of this function or
+    what it returns.'''
+    rt = RecipeTransformer()
+    while True:
+        recipe = input("Recipe Name: ")
+        print(
+            "Options:\n"
+            "1. Get Ingredients\n"
+            "2. Get Awards\n"
+            "3. Get Nominees\n"
+            "4. Get Winners\n"
+            "5. Get Presenters\n"
+            "6. Get All\n"
+            "7. Red Carpet Superlatives\n"
+            "x. Exit Program")
+        entry = input("Enter option: ")
+        if entry == '1':
+            print_items(rt.original_recipe(recipe)['ingredients'])
+        elif entry == '2':
+            print_items(rt.original_recipe(recipe)['directions'])
+        elif entry == '3':
+            print_items2(rt.transform_health(recipe, True))
+        elif entry == '4':
+            print_items2(rt.transform_health(recipe, False))
+        elif entry == '5':
+            print_items2(rt.transform_to_vegetarian(recipe))
+        elif entry == '6':
+            print_items2(rt.transform_to_carnivore(recipe))
+        elif entry == '7':
+            print_items2(rt.transform_to_carnivore(recipe))
+        elif entry == '8':
+            method1 = input("Enter cooking method 1"
+                            " (bake, boil, broil, fry, grill, steam, pressure cook, stir-fry, stew, roast): ")
+            method2 = input("Enter cooking method 2"
+                            " (bake, boil, broil, fry, grill, steam, pressure cook, stir-fry, stew, roast): ")
+            print_items2(rt.transform_method(recipe, method1, method2))
+        elif entry == "x":
+            sys.exit()
+        else:
+            print("Invalid input")
 
-# print('primary methods:')
-# for primary_method in original['primary_methods']:
-#     print(primary_method)
-# print('secondary methods:')
-# for secondary_method in original['secondary_methods']:
-#     print(secondary_method)
 
-# healthy = rt.transform_health(food_item, False)
-# print('\nHEALTHY')
-# for ingredient in healthy[0]:
-#     print(ingredient)
-# for direction in healthy[1]:
-#     print(direction)
-
-
-# original = rt.original_recipe('meat lasagna')
-# print('MEAT')
-# for o in original:
-#     print(o)
-
-vegetarian = rt.transform_to_vegetarian('meat lasagna')
-print('VEGETARIAN')
-rt.recipe_fetcher.display()
-
-# c = rt.transform_method('meat lasagna', 'bake', 'fry')
-# print('BAKE TO FRY')
-# for ll in c:
-#     print(ll)
+if __name__ == '__main__':
+    main()
