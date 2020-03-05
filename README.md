@@ -13,4 +13,10 @@ bs4
 requests
 re
 
-Part of our AllFoods.json (descriptions, cooking methods) and tools.py files take entries from a former project to save time on typing: (https://github.com/tylrodg/CS337-Recipes). Our AllFoods.json also takes inspiration from another project for lists of spices, meats, and vegetables: (https://github.com/dariusk/corpora/tree/master/data/foods), also to save time on typing. 
+Part of our AllFoods.json (descriptions, cooking methods) and tools.py files take entries from a former project to save time on typing: (https://github.com/tylrodg/CS337-Recipes). Our AllFoods.json also takes inspiration from another project for lists of spices, meats, and vegetables: (https://github.com/dariusk/corpora/tree/master/data/foods), also to save time on typing.
+
+INSTRUCTIONS:
+To run the code, simply enter the following on the command line:
+>> python3 transform_recipe.py
+
+The user interface will guide the user through the rest of the steps.
