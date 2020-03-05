@@ -1,5 +1,6 @@
 import scraper
 import ingredients
+import tools
 import foodsdb
 import random
 import json
@@ -30,6 +31,17 @@ class RecipeTransformer:
         print(categories_dict)
         return categories_dict
 
+    def get_tools(self, item):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+        tools_used = []
+
+        for i in range(len(info['directions'])):
+            for tool in tools.tools:
+                if tool not in tools_used and tool in info['directions'][i]:
+                    tools_used.append(tool)
+        return tools_used
 
     def original_recipe(self, item):
         rf = self.recipe_fetcher
@@ -237,6 +249,9 @@ for primary_method in original['primary_methods']:
 print('secondary methods:')
 for secondary_method in original['secondary_methods']:
     print(secondary_method)
+
+print('TOOLS')
+print(rt.get_tools(food_item))
 
 # healthy = rt.transform_health(food_item, False)
 # print('\nHEALTHY')
