@@ -1,0 +1,20 @@
+{
+    "AllSpices": [
+        "black pepper", "garlic powder", "red pepper", "salt", "basil", "thyme", "parsley", "oregano", "bay leaves", "paprika", "rosemary", "sage", "marjoram"
+    ],
+    "AllCarbs": [
+        "lasagna noodles", "potatoes", "pasta", "risotto mix", "Italian bread", "gnocchi", "focaccia", "polenta", "bruschetta", "ravioli", "tortellini", "spaghetti", "penne"
+    ],
+    "AllProteins": [
+        "chicken", "ground beef", "sturgeon", "prosciutto", "pork", "bologna", "salami", "egg", "cottage cheese", "mozzarella", "gorgonzola", "asiago", "tuna", "shrimp"
+    ],
+    "AllVeg": [
+        "onions", "celery", "bell peppers", "carrots",  "mushrooms", "eggplant", "peas", "garlic", "tomatoes", "capers", "green beans", "fennel", "artichoke", "brocolli", "cauliflower", "asparagus", "brussels sprouts"
+    ],
+    "AllFats": [
+        "butter", "olive oil", "lard"
+    ],
+    "AllCondiments": [
+        "green onion", "alioli", "pesto", "alfredo sauce", "marinara sauce", "bolognese sauce", "vodka sauce", "ragu"
+    ]
+}
