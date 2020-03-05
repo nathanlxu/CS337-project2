@@ -53,7 +53,6 @@ class RecipeTransformer:
             if food in categories_dict["AllCarbs"]:
                 categories_dict["AllCarbs"].remove(food)
 
-        print(categories_dict)
         return categories_dict
 
     def get_tools(self, item):
@@ -304,7 +303,6 @@ class RecipeTransformer:
             prep_list.append(np)
 
 
-        print(prep_list)
         categorized = self.get_categories(prep_list)
 
         with open(cuisine+"Foods.json") as rf:
@@ -324,7 +322,6 @@ class RecipeTransformer:
                     random_replacement = random.choice(cuisine_foods[cat])
                     replacements.append([ing, random_replacement])
 
-        print(replacements)
         for rep in replacements:
             for i in range(len(orig_ingredients)-1):
 
@@ -337,8 +334,8 @@ class RecipeTransformer:
                 if rep[0] in orig_directions[i]:
                     orig_directions[i] = (orig_directions[i].replace(rep[0], rep[1]))
 
-        final_dict = {"ingredients": orig_ingredients, "directions": orig_directions}
-        return final_dict
+        final_list = [orig_ingredients, orig_directions]
+        return final_list
 
     # amt is the amount to modify quantity by (double = 2, half = 0.5, etc.)
     def modify_quantity(self, item, amt):
@@ -411,7 +408,9 @@ def main():
         elif entry == 'primary cooking method':
             rec = rt.recipe_fetcher.search_recipes(recipe)[0]
             info = rt.recipe_fetcher.scrape_recipe(rec)
-            print(info["primary_methods"])
+            for method in info["primary_methods"]:
+                print(method)
+            #print(info["primary_methods"])
         elif entry == 'to healthy':
             print_items2(rt.transform_health(recipe, True))
         elif entry == 'to unhealthy':
@@ -421,9 +420,9 @@ def main():
         elif entry == 'to carnivore':
             print_items2(rt.transform_to_carnivore(recipe))
         elif entry == 'to russian':
-            print_items2(rt.transform_to_cuisine(recipe, 'Russian'))
+            print_items(rt.transform_to_cuisine(recipe, 'Russian'))
         elif entry == 'to italian':
-            print_items2(rt.transform_to_cuisine(recipe, 'Italian'))
+            print_items(rt.transform_to_cuisine(recipe, 'Italian'))
         elif entry == 'double quantity':
             print_items2(rt.double_quantity(recipe))
         elif entry == 'halve quantity':
