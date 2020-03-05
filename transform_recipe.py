@@ -312,8 +312,81 @@ class RecipeTransformer:
                 if rep[0] in orig_directions[i]:
                     orig_directions[i] = (orig_directions[i].replace(rep[0], rep[1]))
 
+        final_dict: {"ingredients": orig_ingredients, "directions": orig_directions}        
+        return final_dict
+
+
+    def transform_to_italian(self, rec):
+
+        measurements = ["ounce", "ounces", "cup", "cups", "quart", "quarts", "tablespoon", "tablespoons", "teaspoon", "teaspoons", "pinch", "dash", "gallon", "gallons", 'package', "packages",
+"oz", "qt", "tsp", "tbsp", "gal", "pound", "lb", "pounds", "lbs", "jars", "jar", "or", "to", "taste", ",", "for"]
+
+        original = self.original_recipe(rec)
+        orig_ingredients = original["ingredients"]
+        orig_directions = original["directions"]
+
+        for i in range(len(orig_ingredients) - 1):
+            orig_ingredients[i] = orig_ingredients[i].lower()
+
+        for j in range(len(orig_directions) - 1):
+            orig_directions[j] = orig_directions[j].lower()    
+
+        prep_list = []
+        for ing in orig_ingredients:
+            #tb = TextBlob(ing)
+            tokenized = word_tokenize(ing)
+            for word in tokenized:
+                if word.isnumeric():
+                    tokenized.remove(word)
+                if word in measurements:
+                    tokenized.remove(word)
+
+            untokenized = ' '.join(tokenized)
+            untokenized_tb = TextBlob(untokenized)
+            np = untokenized_tb.noun_phrases
+            if len(np) == 0:
+                np = untokenized
+            else: 
+                np = np[0]
+            
+            prep_list.append(np)
         
-        return [orig_ingredients, orig_directions]
+
+        print(prep_list)
+        categorized = self.get_categories(prep_list)
+
+        with open("ItalianFoods.json") as rf:
+            italian_foods = json.load(rf)
+
+        replacements = []
+
+        for cat in categorized:
+            randoms = []
+            for ing in categorized[cat]:
+                counter = 0
+                for food in italian_foods[cat]:
+                    if food in ing:
+                        counter+=1
+                if counter == 0:
+
+                    random_replacement = random.choice(italian_foods[cat])
+                    replacements.append([ing, random_replacement])
+        
+        print(replacements)
+        for rep in replacements:
+            for i in range(len(orig_ingredients)-1):
+                
+                if rep[0] in orig_ingredients[i]:
+                    orig_ingredients[i] = (orig_ingredients[i].replace(rep[0], rep[1]))
+
+        for rep in replacements:
+            for i in range(len(orig_directions)-1):
+                
+                if rep[0] in orig_directions[i]:
+                    orig_directions[i] = (orig_directions[i].replace(rep[0], rep[1]))
+
+        final_dict: {"ingredients": orig_ingredients, "directions": orig_directions}        
+        return final_dict
 
 
         
