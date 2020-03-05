@@ -377,7 +377,7 @@ def main():
     rt = RecipeTransformer()
     item = input("Enter a recipe name: ")
     while True:
-        recipe = input("Press <enter> to continue, or type a new recipe name: ")
+        recipe = input("\nPress <ENTER> to CONTINUE with this recipe, or type a new recipe name to CHANGE: ")
         if not recipe:
             recipe = item
         print(
@@ -395,7 +395,7 @@ def main():
             "to italian\n"
             "double quantity\n"
             "halve quantity\n"
-            "x. Exit Program")
+            "enter 'x' to exit program")
         entry = input("\nEnter option: ")
         if entry == 'ingredients':
             print_items(rt.original_recipe(recipe)['ingredients'])
