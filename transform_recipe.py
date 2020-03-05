@@ -419,7 +419,9 @@ def main():
         elif entry == 'measurements':
             print_items(rt.get_measurements(recipe))
         elif entry == 'primary cooking method':
-            rdb = foodsdb.RecipeDB()
+            rec = rt.recipe_fetcher.search_recipes(recipe)[0]
+            info = rt.recipe_fetcher.scrape_recipe(rec)
+            print(info["primary_methods"])
         elif entry == 'to healthy':
             print_items2(rt.transform_health(recipe, True))
         elif entry == 'to unhealthy':
