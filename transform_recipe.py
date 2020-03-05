@@ -3,6 +3,9 @@ import ingredients
 import foodsdb
 import random
 import json
+from textblob import TextBlob
+from nltk.tokenize import word_tokenize
+
 
 class RecipeTransformer:
     def __init__(self):
@@ -10,23 +13,43 @@ class RecipeTransformer:
         self.idb = foodsdb.RecipeDB('AllFoods.json')
         # self.russian = RussianFoods
 
-    def get_categories(self, item):
+    def get_categories(self, ingredients):
         with open("AllFoods.json") as foods:
-            all_foods = json.loads(foods)
-        categories = ["Veg", "Carbs", "Proteins", "Spices", "Fats", "Condiments"]
+            all_foods = json.load(foods)
+        categories = ["AllVeg", "AllCarbs", "AllProteins", "AllSpices", "AllFats", "AllCondiments"]
         categories_dict = {
-            "Carbs": [],
-            "Proteins": [],
-            "Veg": [],
-            "Spices": [],
-            "Fats": [],
-            "Condiments": []
+            "AllCarbs": [],
+            "AllProteins": [],
+            "AllVeg": [],
+            "AllSpices": [],
+            "AllFats": [],
+            "AllCondiments": []
         }
-        recipe = self.original_recipe(item)
-        for ingredient in recipe:
+        for ingredient in ingredients:
             for cat in categories:
-                if ingredient in all_foods[cat]:
-                     categories_dict[cat].append(ingredient)
+                for food in all_foods[cat]:
+                    if food in ingredient:
+                #if ingredient in all_foods[cat]:
+                        categories_dict[cat].append(ingredient)
+        for cat_list in categories_dict:
+            categories_dict[cat_list] = list(set(categories_dict[cat_list]))
+
+        for food in categories_dict["AllProteins"]:
+            if food in categories_dict["AllCarbs"]:
+                categories_dict["AllCarbs"].remove(food)
+
+        for food in categories_dict["AllVeg"]:
+            if food in categories_dict["AllSpices"]:
+                categories_dict["AllSpices"].remove(food)
+
+        for food in categories_dict["AllCondiments"]:
+            if food in categories_dict["AllVeg"]:
+                categories_dict["AllVeg"].remove(food)
+
+        for food in categories_dict["AllCondiments"]:
+            if food in categories_dict["AllCarbs"]:
+                categories_dict["AllCarbs"].remove(food)
+
         print(categories_dict)
         return categories_dict
 
@@ -210,21 +233,100 @@ class RecipeTransformer:
 
         return info['ingredients']
 
-    def transform_to_russian(self, item):
+
+    def get_np(self, text):
+        tb = TextBlob(text)
+        return tb.noun_phrases
 
 
-        rf = self.recipe_fetcher
-        recipe = rf.search_recipes(item)[0]
-        info = rf.scrape_recipe(recipe)
 
-        self.get_categories(item)
+    def transform_to_russian(self, rec):
+
+        measurements = ["ounce", "ounces", "cup", "cups", "quart", "quarts", "tablespoon", "tablespoons", "teaspoon", "teaspoons", "pinch", "dash", "gallon", "gallons", 'package', "packages",
+"oz", "qt", "tsp", "tbsp", "gal", "pound", "lb", "pounds", "lbs", "jars", "jar", "or", "to", "taste", ",", "for"]
+
+        original = self.original_recipe(rec)
+        orig_ingredients = original["ingredients"]
+        orig_directions = original["directions"]
+
+        for i in range(len(orig_ingredients) - 1):
+            orig_ingredients[i] = orig_ingredients[i].lower()
+
+        for j in range(len(orig_directions) - 1):
+            orig_directions[j] = orig_directions[j].lower()    
+
+        prep_list = []
+        for ing in orig_ingredients:
+            #tb = TextBlob(ing)
+            tokenized = word_tokenize(ing)
+            for word in tokenized:
+                if word.isnumeric():
+                    tokenized.remove(word)
+                if word in measurements:
+                    tokenized.remove(word)
+
+            untokenized = ' '.join(tokenized)
+            untokenized_tb = TextBlob(untokenized)
+            np = untokenized_tb.noun_phrases
+            if len(np) == 0:
+                np = untokenized
+            else: 
+                np = np[0]
+            
+            prep_list.append(np)
+        
+
+        print(prep_list)
+        categorized = self.get_categories(prep_list)
+
+        with open("RussianFoods.json") as rf:
+            russian_foods = json.load(rf)
+
+        replacements = []
+
+        for cat in categorized:
+            randoms = []
+            for ing in categorized[cat]:
+                counter = 0
+                for food in russian_foods[cat]:
+                    if food in ing:
+                        counter+=1
+                if counter == 0:
+
+                    random_replacement = random.choice(russian_foods[cat])
+                    replacements.append([ing, random_replacement])
+        
+        print(replacements)
+        for rep in replacements:
+            for i in range(len(orig_ingredients)-1):
+                
+                if rep[0] in orig_ingredients[i]:
+                    orig_ingredients[i] = (orig_ingredients[i].replace(rep[0], rep[1]))
+
+        for rep in replacements:
+            for i in range(len(orig_directions)-1):
+                
+                if rep[0] in orig_directions[i]:
+                    orig_directions[i] = (orig_directions[i].replace(rep[0], rep[1]))
+
+        
+        return [orig_ingredients, orig_directions]
+
+
+        
+
 
 
 
 rt = RecipeTransformer()
 food_item = "meat lasagna"
 
-original = rt.original_recipe(food_item)
+
+parsed = rt.transform_to_russian("meat lasagna")
+print(parsed)
+#original = rt.original_recipe(food_item)
+
+'''
 print('ORIGINAL')
 for ingredient in original['ingredients']:
     print(ingredient)
@@ -237,6 +339,7 @@ for primary_method in original['primary_methods']:
 print('secondary methods:')
 for secondary_method in original['secondary_methods']:
     print(secondary_method)
+'''
 
 # healthy = rt.transform_health(food_item, False)
 # print('\nHEALTHY')
