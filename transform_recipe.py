@@ -111,6 +111,8 @@ class RecipeTransformer:
         transformed_ingredients = self.transform(info['ingredients'], is_healthy)
         transformed_directions = self.transform(info['directions'], is_healthy)
 
+        self.recipe_fetcher.results['ingredients'] = transformed_ingredients
+        self.recipe_fetcher.results['directions'] = transformed_directions
         return transformed_ingredients, transformed_directions
 
 
@@ -137,7 +139,7 @@ class RecipeTransformer:
                     print('new healthy ingredient recipe:', new_ingredient)
                     info['directions'][i] = new_ingredient
                     break
-
+        self.recipe_fetcher.results = info
         return info
 
     def transform_to_vegetarian(self, item):
@@ -169,7 +171,7 @@ class RecipeTransformer:
                     for rm in removal:
                         new_entry.remove(rm)
                     info['ingredients'][i] = " ".join(new_entry)
-        print(info['directions'])
+        self.recipe_fetcher.results = info
         return info['ingredients']
 
     def transform_to_carnivore(self, item):
@@ -193,6 +195,7 @@ class RecipeTransformer:
                         info['directions'][j] = info['directions'][j].replace(element, replacement)
                     new_entry = [replacement if wd == element else wd for wd in new_entry]
                     info['ingredients'][i] = " ".join(new_entry)
+        self.recipe_fetcher.results = info
         return info['ingredients']
 
     def transform_method(self, item, method1, method2):
@@ -233,7 +236,7 @@ class RecipeTransformer:
                 if element == methods[method1]:
                     new_direction = [methods[method2] if wd == methods[method1] else wd for wd in new_direction]
                 info['directions'][j] = " ".join(new_direction)
-
+        self.recipe_fetcher.results = info
         return info['ingredients']
 
     def transform_to_russian(self, item):
@@ -283,26 +286,18 @@ food_item = "meat lasagna"
 
 original = rt.original_recipe(food_item)
 print('ORIGINAL')
-for ingredient in original['ingredients']:
-    print(ingredient)
-for direction in original['directions']:
-    print(direction)
+# for ingredient in original['ingredients']:
+#     print(ingredient)
+# for direction in original['directions']:
+#     print(direction)
+rt.recipe_fetcher.display()
 
-print('primary methods:')
-for primary_method in original['primary_methods']:
-    print(primary_method)
-print('secondary methods:')
-for secondary_method in original['secondary_methods']:
-    print(secondary_method)
-
-print('\nTOOLS')
-print(rt.get_tools(food_item))
-
-print('\nMEASUREMENTS')
-print(rt.get_measurements(food_item))
-
-print('\nCHANGED QUANTITIES')
-print(rt.halve_quantity(food_item))
+# print('primary methods:')
+# for primary_method in original['primary_methods']:
+#     print(primary_method)
+# print('secondary methods:')
+# for secondary_method in original['secondary_methods']:
+#     print(secondary_method)
 
 # healthy = rt.transform_health(food_item, False)
 # print('\nHEALTHY')
@@ -317,10 +312,9 @@ print(rt.halve_quantity(food_item))
 # for o in original:
 #     print(o)
 
-# vegetarian = rt.transform_to_vegetarian('meat lasagna')
-# print('VEGETARIAN')
-# for v in vegetarian:
-#     print(v)
+vegetarian = rt.transform_to_vegetarian('meat lasagna')
+print('VEGETARIAN')
+rt.recipe_fetcher.display()
 
 # c = rt.transform_method('meat lasagna', 'bake', 'fry')
 # print('BAKE TO FRY')

@@ -34,24 +34,3 @@ class RecipeDB:
                 self.t2m[method[1]] = method[0]
             self.pcm = json_data['cooking_methods']['primary']
             self.scm = json_data['cooking_methods']['secondary']
-
-            # self.seafood = json_data["seafood"]
-            # self.dessert = json_data["dessert"]
-            # self.veggie = json_data["veggie"]
-            # self.other = json_data["veggie"]
-
-            # self.hardFoodPrep = json_data["preparation"]["hardFoodPrep"]
-            # self.regularFoodPrep = json_data["preparation"]["regularFoodPrep"]
-
-            # set of seasons
-            
-            # set of styles
-            # self.styles = json_data["styles"]
-
-            # # set of measurements
-            # self.solidMeasurements = json_data["measurement"]["solids"]
-            # self.liquidMeasurements = json_data["measurement"]["liquids"]
-
-            # # set of cooking methods
-            # self.primaryMethods = json_data["methods"]["primary"]
-            # self.secondaryMethods = json_data["methods"]["secondary"]
