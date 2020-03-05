@@ -420,9 +420,9 @@ def main():
         elif entry == 'to carnivore':
             print_items2(rt.transform_to_carnivore(recipe))
         elif entry == 'to russian':
-            print_items(rt.transform_to_cuisine(recipe, 'Russian'))
+            print_items2(rt.transform_to_cuisine(recipe, 'Russian'))
         elif entry == 'to italian':
-            print_items(rt.transform_to_cuisine(recipe, 'Italian'))
+            print_items2(rt.transform_to_cuisine(recipe, 'Italian'))
         elif entry == 'double quantity':
             print_items2(rt.double_quantity(recipe))
         elif entry == 'halve quantity':
