@@ -346,33 +346,20 @@ class RecipeTransformer:
         recipe = rf.search_recipes(item)[0]
         info = rf.scrape_recipe(recipe)
         modified_ingredients = []
+        modified_directions = []
 
         for ing in info['ingredients']:
             modified_ingredients.append(utils.scale_fractional_quantity(ing, amt))
+        for ing in info['directions']:
+            modified_directions.append(utils.scale_fractional_quantity(ing, amt))
 
-        return modified_ingredients
+        return modified_ingredients, modified_directions
 
     def double_quantity(self, item, amt=2):
-        rf = self.recipe_fetcher
-        recipe = rf.search_recipes(item)[0]
-        info = rf.scrape_recipe(recipe)
-        modified_ingredients = []
-
-        for ing in info['ingredients']:
-            modified_ingredients.append(utils.scale_fractional_quantity(ing, amt))
-
-        return modified_ingredients
+        return self.modify_quantity(item, amt)
 
     def halve_quantity(self, item, amt=0.5):
-        rf = self.recipe_fetcher
-        recipe = rf.search_recipes(item)[0]
-        info = rf.scrape_recipe(recipe)
-        modified_ingredients = []
-
-        for ing in info['ingredients']:
-            modified_ingredients.append(utils.scale_fractional_quantity(ing, amt))
-
-        return modified_ingredients
+        return self.modify_quantity(item, amt)
 
 
 def print_items(lst):
@@ -391,8 +378,11 @@ def main():
     run when grading. Do NOT change the name of this function or
     what it returns.'''
     rt = RecipeTransformer()
+    item = input("Enter a recipe name: ")
     while True:
-        recipe = input("Recipe Name: ")
+        recipe = input("Press <enter> to continue, or type a new recipe name: ")
+        if not recipe:
+            recipe = item
         print(
             "Enter one of the following:\n"
             "ingredients\n"
@@ -409,7 +399,7 @@ def main():
             "double quantity\n"
             "halve quantity\n"
             "x. Exit Program")
-        entry = input("Enter option: ")
+        entry = input("\nEnter option: ")
         if entry == 'ingredients':
             print_items(rt.original_recipe(recipe)['ingredients'])
         elif entry == 'directions':
