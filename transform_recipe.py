@@ -1,9 +1,11 @@
 import scraper
 import ingredients
+import measurements
 import tools
 import foodsdb
 import random
 import json
+import utils
 
 class RecipeTransformer:
     def __init__(self):
@@ -42,6 +44,18 @@ class RecipeTransformer:
                 if tool not in tools_used and tool in info['directions'][i]:
                     tools_used.append(tool)
         return tools_used
+
+    def get_measurements(self, item):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+        measurements_used = []
+
+        for i in range(len(info['ingredients'])):
+            for measurement in measurements.measurements:
+                if measurement not in measurements_used and measurement in info['ingredients'][i]:
+                    measurements_used.append(measurement)
+        return measurements_used
 
     def original_recipe(self, item):
         rf = self.recipe_fetcher
@@ -223,14 +237,45 @@ class RecipeTransformer:
         return info['ingredients']
 
     def transform_to_russian(self, item):
-
-
         rf = self.recipe_fetcher
         recipe = rf.search_recipes(item)[0]
         info = rf.scrape_recipe(recipe)
 
         self.get_categories(item)
 
+    # amt is the amount to modify quantity by (double = 2, half = 0.5, etc.)
+    def modify_quantity(self, item, amt):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+        modified_ingredients = []
+
+        for ing in info['ingredients']:
+            modified_ingredients.append(utils.scale_fractional_quantity(ing, amt))
+
+        return modified_ingredients
+
+    def double_quantity(self, item, amt=2):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+        modified_ingredients = []
+
+        for ing in info['ingredients']:
+            modified_ingredients.append(utils.scale_fractional_quantity(ing, amt))
+
+        return modified_ingredients
+
+    def halve_quantity(self, item, amt=0.5):
+        rf = self.recipe_fetcher
+        recipe = rf.search_recipes(item)[0]
+        info = rf.scrape_recipe(recipe)
+        modified_ingredients = []
+
+        for ing in info['ingredients']:
+            modified_ingredients.append(utils.scale_fractional_quantity(ing, amt))
+
+        return modified_ingredients
 
 
 rt = RecipeTransformer()
@@ -250,8 +295,14 @@ print('secondary methods:')
 for secondary_method in original['secondary_methods']:
     print(secondary_method)
 
-print('TOOLS')
+print('\nTOOLS')
 print(rt.get_tools(food_item))
+
+print('\nMEASUREMENTS')
+print(rt.get_measurements(food_item))
+
+print('\nCHANGED QUANTITIES')
+print(rt.halve_quantity(food_item))
 
 # healthy = rt.transform_health(food_item, False)
 # print('\nHEALTHY')
